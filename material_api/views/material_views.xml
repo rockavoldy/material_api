@@ -1,0 +1,100 @@
+<odoo>
+
+    <record id="material_view_tree" model="ir.ui.view">
+        <field name="name">material.view.tree</field>
+        <field name="model">material.material</field>
+        <field name="arch" type="xml">
+            <tree string="Materials" multi_edit="1">
+                <field name="material_code" />
+                <field name="name" />
+                <field name="material_type" />
+                <field name="currency_id" invisible="1" />
+                <field name="material_buy_price" />
+                <field name="supplier_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="material_view_form" model="ir.ui.view">
+        <field name="name">material.view.form</field>
+        <field name="model">material.material</field>
+        <field name="arch" type="xml">
+            <form string="Material">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group name="material_header">
+                        <group>
+                            <field name="material_code" />                            
+                            <field name="supplier_id" />
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1" />
+                            <field name="material_buy_price" widget="monetary" />
+                            <field name="material_type" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_material_filter" model="ir.ui.view">
+        <field name="name">material.list.select</field>
+        <field name="model">material.material</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Search Materials">
+                <field name="name" string="Material name" />
+                <field name="supplier_id" operator="child_of" />
+                <group expand="0" string="Group By">
+                    <filter string="Supplier" name="supplier" domain="[]" context="{'group_by': 'supplier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_materials" model="ir.actions.act_window">
+        <field name="name">Materials</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">material.material</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_material_filter"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new material
+            </p>
+        </field>
+    </record>
+
+    <record id="material_action_view_order_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="material_api.material_view_tree"/>
+        <field name="act_window_id" ref="action_materials"/>
+    </record>
+    
+    <record id="material_action_view_order_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="material_api.material_view_form"/>
+        <field name="act_window_id" ref="action_materials"/>
+    </record>
+
+    <menuitem id="material_menu_root"
+        name="Materials"
+        active="True"        
+        sequence="71" />
+
+
+    <menuitem id="material_menu" 
+        name="Materials"
+        action="action_materials"
+        parent="material_menu_root"
+        sequence="2" />
+
+</odoo>
